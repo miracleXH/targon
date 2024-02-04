@@ -29,17 +29,12 @@ def create_prompt( challenge_data ):
     """
 
     output = '''### Instruction: 
-Your task is to perform retrieval augmented generation (RAG) over the given query and search results. Return your answer in a json format that includes a summary of the search results. 
+    - Respond to the following prompt with a well-reasoned argument.
+    - Keep the response concise and to the point. two or three sentences per point, if there are multiple points.
+    - Quote your sources where necessary.
 
-Query:
-{}
-\n\n
-Search Results:
-{}
-\n\n
-Query:
-{}
-
-### Response:"'''.format(challenge_data['query'], challenge_data['sources'], challenge_data['query'])
+### Source: {1}
+### Query: {0}
+### Response: '''.format(challenge_data['query'], challenge_data['sources'])
     
     return output

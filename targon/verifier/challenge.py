@@ -49,6 +49,12 @@ def _filter_verified_responses(uids, responses):
 
 def verify( self, output, ground_truth_output):
 
+    # ensure they are the same length, else shorten the longer one to the length of the shorter one
+    min_length = min(len(output), len(ground_truth_output))
+    output, ground_truth_output = output[:min_length], ground_truth_output[:min_length]
+
+    
+
     output_hash = hashing_function(output)
     ground_truth_hash = hashing_function(ground_truth_output)
 
