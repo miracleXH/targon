@@ -40,7 +40,6 @@ Search Results:
 Query:
 {}
 
-### Response:
-{ "summary": "'''.format(challenge_data['query'], challenge_data['sources'], challenge_data['query'])
+### Response:"'''.format(challenge_data['query'], challenge_data['sources'], challenge_data['query'])
     
     return output
