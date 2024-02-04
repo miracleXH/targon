@@ -99,6 +99,8 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         # output_encoded = output.encode('utf-8')
         output_normalized = output.replace('\r\n', '\n')
         output_cleaned = ' '.join(output_normalized.split())
+        # remove any spaces at the beginning or end of the string
+        ground_truth_output_cleaned = ground_truth_output_cleaned.strip()
 
         
         bt.logging.debug('prover output', output_cleaned)
@@ -209,7 +211,8 @@ async def challenge_data( self ):
     ground_truth_output_normalized = ground_truth_output.replace('\r\n', '\n')
     ground_truth_output_cleaned = ' '.join(ground_truth_output_normalized.split())
 
-    # remove any big spaces and new lines
+    # remove any spaces at the beginning or end of the string
+    ground_truth_output_cleaned = ground_truth_output_cleaned.strip()
 
     bt.logging.debug('ground truth output', ground_truth_output_cleaned)
     # --- get hashing function
