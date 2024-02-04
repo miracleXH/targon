@@ -100,7 +100,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         output_normalized = output.replace('\r\n', '\n')
         output_cleaned = ' '.join(output_normalized.split())
         # remove any spaces at the beginning or end of the string
-        ground_truth_output_cleaned = ground_truth_output_cleaned.strip()
+        output_cleaned = output_cleaned.strip()
 
         
         bt.logging.debug('prover output', output_cleaned)
