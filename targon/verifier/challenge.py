@@ -239,7 +239,7 @@ async def challenge_data( self ):
     bt.logging.debug(f"challenge uids {uids}")
     responses = []
     for uid in uids:
-        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_output, sampling_params)))
+        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_output_cleaned, sampling_params)))
     responses = await asyncio.gather(*tasks)
 
 
