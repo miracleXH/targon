@@ -105,6 +105,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         # output_encoded = output.encode('utf-8')
         try:
             output_normalized = output.replace('\r\n', '\n')
+            output_normalized = output_normalized.replace('\n', ' ')
             output_cleaned = ' '.join(output_normalized.split())
             # remove any spaces at the beginning or end of the string
             output_cleaned = output_cleaned.strip()
@@ -151,7 +152,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         synapse.completion = response
         
 
-        verified = verify( self, response, ground_truth_hash )
+        verified = verify( self, response, ground_truth_output )
 
         output_dict = (
             synapse,
@@ -219,14 +220,15 @@ async def challenge_data( self ):
 
     # ground_truth_output_encoded = ground_truth_output.encode('utf-8')
     ground_truth_output_normalized = ground_truth_output.replace('\r\n', '\n')
+    ground_truth_output_normalized = ground_truth_output_normalized.replace('\n', ' ')
     ground_truth_output_cleaned = ' '.join(ground_truth_output_normalized.split())
 
     # remove any spaces at the beginning or end of the string
     ground_truth_output_cleaned = ground_truth_output_cleaned.strip()
 
-    bt.logging.debug('ground truth output', ground_truth_output_cleaned)
+    # bt.logging.debug('ground truth output', ground_truth_output_cleaned)
     # --- get hashing function
-    ground_truth_hash = hashing_function(ground_truth_output_cleaned)
+    # ground_truth_hash = hashing_function(ground_truth_output_cleaned)
 
     # --- Get the uids to query
     start_time = time.time()
