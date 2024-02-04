@@ -47,9 +47,10 @@ def _filter_verified_responses(uids, responses):
     uids, responses = zip(*not_none_responses)
     return uids, responses
 
-def verify( self, output, ground_truth_hash):
+def verify( self, output, ground_truth_output):
 
     output_hash = hashing_function(output)
+    ground_truth_hash = hashing_function(ground_truth_output)
 
     if not output_hash == ground_truth_hash:
         bt.logging.debug(
@@ -57,14 +58,19 @@ def verify( self, output, ground_truth_hash):
         )
         bt.logging.debug(f"prover output hash: {output_hash}")
         bt.logging.debug(f"ground truth output: {ground_truth_hash}")
+
+        bt.logging('prover output', output)
+        bt.logging('ground truth output', ground_truth_output)
         return False
 
     bt.logging.debug(
         f"Output hash {output_hash} matches ground truth hash {ground_truth_hash}"
     )
+    bt.logging('prover output', output)
+    bt.logging('ground truth output', ground_truth_output)
     return True
 
-async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_truth_hash: str, sampling_params: protocol.ChallengeSamplingParams ) -> typing.Tuple[bool, protocol.Challenge]:
+async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_truth_output: str, sampling_params: protocol.ChallengeSamplingParams ) -> typing.Tuple[bool, protocol.Challenge]:
     """
     Handles a challenge sent to a prover and verifies the response.
 
@@ -108,7 +114,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
             output_cleaned = output
         
         bt.logging.debug('prover output', output_cleaned)
-        verified = verify( self, output_cleaned, ground_truth_hash )
+        verified = verify( self, output_cleaned, ground_truth_output )
 
         output_dict = (
             response,
@@ -231,7 +237,7 @@ async def challenge_data( self ):
     bt.logging.debug(f"challenge uids {uids}")
     responses = []
     for uid in uids:
-        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_hash, sampling_params)))
+        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_output, sampling_params)))
     responses = await asyncio.gather(*tasks)
 
 
