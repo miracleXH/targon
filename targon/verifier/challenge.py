@@ -66,8 +66,8 @@ def verify( self, output, ground_truth_output):
     bt.logging.debug(
         f"Output hash {output_hash} matches ground truth hash {ground_truth_hash}"
     )
-    bt.logging('prover output', output)
-    bt.logging('ground truth output', ground_truth_output)
+    bt.logging.debug('prover output', output)
+    bt.logging.debug('ground truth output', ground_truth_output)
     return True
 
 async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_truth_output: str, sampling_params: protocol.ChallengeSamplingParams ) -> typing.Tuple[bool, protocol.Challenge]:
