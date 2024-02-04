@@ -59,8 +59,8 @@ def verify( self, output, ground_truth_output):
         bt.logging.debug(f"prover output hash: {output_hash}")
         bt.logging.debug(f"ground truth output: {ground_truth_hash}")
 
-        bt.logging('prover output', output)
-        bt.logging('ground truth output', ground_truth_output)
+        bt.logging.debug('prover output', output)
+        bt.logging.debug('ground truth output', ground_truth_output)
         return False
 
     bt.logging.debug(
