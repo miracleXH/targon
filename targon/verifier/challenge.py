@@ -97,11 +97,15 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         output = response.completion
 
         # output_encoded = output.encode('utf-8')
-        output_normalized = output.replace('\r\n', '\n')
-        output_cleaned = ' '.join(output_normalized.split())
-        # remove any spaces at the beginning or end of the string
-        output_cleaned = output_cleaned.strip()
+        try:
+            output_normalized = output.replace('\r\n', '\n')
+            output_cleaned = ' '.join(output_normalized.split())
+            # remove any spaces at the beginning or end of the string
+            output_cleaned = output_cleaned.strip()
 
+        except Exception as e:
+            bt.logging.error(f"Error normalizing output: {e}")
+            output_cleaned = output
         
         bt.logging.debug('prover output', output_cleaned)
         verified = verify( self, output_cleaned, ground_truth_hash )
