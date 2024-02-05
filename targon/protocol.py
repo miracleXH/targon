@@ -196,13 +196,13 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     top_k: int = pydantic.Field(
-        10,
+        1,
         title="Top K",
         description="Nucleus sampling parameter, top_p probability mass.",
     )
 
     top_n_tokens: int = pydantic.Field(
-        5,
+        1,
         title="Top N Tokens",
         description="The number of tokens to return.",
     )
