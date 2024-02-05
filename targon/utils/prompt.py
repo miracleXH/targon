@@ -33,7 +33,7 @@ def create_prompt( challenge_data ):
     - Keep the response concise and to the point. two or three sentences per point, if there are multiple points.
     - Quote your sources where necessary.
 
-### Source: {1}
+### Sources: {1}
 ### Query: {0}
 ### Response: '''.format(challenge_data['query'], challenge_data['sources'])
     
