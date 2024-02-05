@@ -208,7 +208,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     top_p: float = pydantic.Field(
-        0.0,
+        9e-4,
         title="Top P",
         description="Nucleus sampling parameter, top_p probability mass.",
     )
@@ -220,7 +220,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     typical_p: float = pydantic.Field(
-        0.0,
+        9e-4,
         title="Typical P",
         description="The typical probability.",
     )
