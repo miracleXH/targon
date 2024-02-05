@@ -142,7 +142,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     decoder_input_details: bool = pydantic.Field(
-        True,
+        False,
         title="Decoder Input Details",
         description="Whether to return the decoder input details.",
     )
@@ -190,7 +190,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     temperature: float = pydantic.Field(
-        9e-4,
+        0.0,
         title="Temperature",
         description="Sampling temperature to use, between 0 and 2.",
     )
@@ -208,7 +208,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     top_p: float = pydantic.Field(
-        0.9999999,
+        0.0,
         title="Top P",
         description="Nucleus sampling parameter, top_p probability mass.",
     )
@@ -220,7 +220,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     typical_p: float = pydantic.Field(
-        0.9999999,
+        0.0,
         title="Typical P",
         description="The typical probability.",
     )

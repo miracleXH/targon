@@ -41,12 +41,12 @@ async def forward(self):
         current_block = self.subtensor.substrate.get_block_number(None)
         bt.logging.info(f"forward block: {self.block}")
 
-        for iter in range(self.config.neuron.iter_rate):
+        # for iter in range(self.config.neuron.iter_rate):
             # --- Generate the query.
-            event = await challenge_data(self)
+        event = await challenge_data(self)
 
-            # --- Log the event
-            log_event(self, event)
+        # --- Log the event
+        log_event(self, event)
 
         if not self.config.mock:
             if self.block >= self.next_adjustment_block and self.step > 0:

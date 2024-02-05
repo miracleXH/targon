@@ -216,7 +216,7 @@ async def challenge_data( self ):
         seed=sampling_params.seed,
         do_sample=sampling_params.do_sample,
         repetition_penalty=sampling_params.repetition_penalty,
-        temperature=sampling_params.temperature,
+        temperature=0.0,
         top_k=sampling_params.top_k,
         top_p=sampling_params.top_p,
         truncate=sampling_params.truncate,
