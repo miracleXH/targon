@@ -56,6 +56,49 @@ def check_uid_availability(
     return True
 
 
+def get_random_uids_deterministically(self, k: int, exclude: List[int] = None) -> torch.LongTensor:
+    """Returns k available random (deterministically selected) uids from the metagraph.
+    
+    Args:
+        k (int): Number of uids to return.
+        exclude (List[int]): List of uids to exclude from the random sampling.
+        
+    Returns:
+        uids (torch.LongTensor): Deterministically sampled available uids.
+        
+    Notes:
+        If `k` is larger than the number of available `uids`, set `k` to the number of available `uids`.
+    """
+    candidate_uids = []
+    avail_uids = []
+
+    for uid in range(self.metagraph.n.item()):
+        if uid == self.uid:
+            continue
+        uid_is_available = check_uid_availability(
+            self.metagraph, uid, self.config.neuron.vpermit_tao_limit, self.config.mock
+        )
+        uid_is_not_excluded = exclude is None or uid not in exclude
+
+        if uid_is_available:
+            avail_uids.append(uid)
+            if uid_is_not_excluded:
+                candidate_uids.append(uid)
+    
+    # Sort the candidate_uids for deterministic selection
+    candidate_uids.sort()
+    
+    # Determine the number of uids to actually return, adjusting for the requested amount and availability
+    num_uids_to_return = min(k, len(candidate_uids))
+    
+    # Select the first `k` uids from the sorted candidate list
+    selected_uids = candidate_uids[:num_uids_to_return]
+    
+    # Convert the selected uids to a tensor
+    uids = torch.tensor(selected_uids, dtype=torch.long)
+    return uids
+
+
 
 def get_random_uids(
     self, k: int, exclude: List[int] = None

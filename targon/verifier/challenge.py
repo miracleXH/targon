@@ -30,9 +30,9 @@ from targon.verifier.event import EventSchema
 from targon.utils.prompt import create_prompt
 from targon.utils.misc import return_json_params
 from targon.constants import CHALLENGE_FAILURE_REWARD
-from targon.verifier.uids import get_tiered_uids, get_random_uids
 from targon.verifier.bonding import update_statistics, get_tier_factor
 from targon.verifier.reward import hashing_function, apply_reward_scores
+from targon.verifier.uids import get_tiered_uids, get_random_uids, get_random_uids_deterministically
 
 
 def _filter_verified_responses(uids, responses):
@@ -237,8 +237,8 @@ async def challenge_data( self ):
     start_time = time.time()
     tasks = []
     # uids = await get_tiered_uids( self, k=self.config.neuron.sample_size )
-    uids = get_random_uids( self, k=self.config.neuron.sample_size )
-
+    # uids = get_random_uids( self, k=self.config.neuron.sample_size )
+    uids = get_random_uids_deterministically( self, k=self.config.neuron.sample_size )
     bt.logging.debug(f"challenge uids {uids}")
     responses = []
     for uid in uids:
