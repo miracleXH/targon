@@ -18,10 +18,11 @@
 
 import time
 import torch
+import httpx
 import random
 import typing
+import secrets
 import asyncio
-import httpx
 import bittensor as bt
 
 from targon import protocol
@@ -200,7 +201,7 @@ async def challenge_data( self ):
     private_input = httpx.get(url).json()
     prompt = create_prompt(private_input)
     bt.logging.info('prompt created')
-    seed = random.randint(10000, 10000000)
+    seed = secrets.randbelow(10000000)
 
 
     sampling_params = protocol.ChallengeSamplingParams(
