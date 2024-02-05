@@ -190,7 +190,7 @@ class ChallengeSamplingParams(pydantic.BaseModel):
     )
 
     temperature: float = pydantic.Field(
-        0.0,
+        9e-4,
         title="Temperature",
         description="Sampling temperature to use, between 0 and 2.",
     )
