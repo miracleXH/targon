@@ -17,6 +17,28 @@
 # DEALINGS IN THE SOFTWARE.
 
 
+# def create_prompt( challenge_data ):
+#     """
+#     Creates a prompt for the prover to respond to.
+
+#     Parameters:
+#     - challenge_data (protocol.Challenge): The challenge data sent to the prover.
+
+#     Returns:
+#     - str: The prompt for the prover to respond to.
+#     """
+
+#     output = '''### Instruction: 
+#     - Respond to the following prompt with a well-reasoned argument.
+#     - Keep the response concise and to the point. two or three sentences per point, if there are multiple points.
+#     - Quote your sources where necessary.
+
+# ### Sources: {1}
+# ### Query: {0}
+# ### Response: '''.format(challenge_data['query'], challenge_data['sources'])
+    
+#     return output
+
 def create_prompt( challenge_data ):
     """
     Creates a prompt for the prover to respond to.
@@ -29,12 +51,18 @@ def create_prompt( challenge_data ):
     """
 
     output = '''### Instruction: 
-    - Respond to the following prompt with a well-reasoned argument.
-    - Keep the response concise and to the point. two or three sentences per point, if there are multiple points.
-    - Quote your sources where necessary.
+Your task is to perform retrieval augmented generation (RAG) over the given query and search results. Return your answer in a json format that includes a summary of the search results. 
 
-### Sources: {1}
-### Query: {0}
-### Response: '''.format(challenge_data['query'], challenge_data['sources'])
+Query:
+{}
+\n\n
+Search Results:
+{}
+\n\n
+Query:
+{}
+
+### Response:
+'''.format(challenge_data['query'], challenge_data['sources'], challenge_data['query'])
     
     return output
