@@ -219,6 +219,7 @@ async def challenge_data( self ):
         top_k=sampling_params.top_k,
         top_p=sampling_params.top_p,
         truncate=sampling_params.truncate,
+        top_n_tokens=sampling_params.top_n_tokens,
         typical_p=sampling_params.typical_p,
         watermark=sampling_params.watermark,
     ) 
@@ -231,10 +232,6 @@ async def challenge_data( self ):
 
     # remove any spaces at the beginning or end of the string
     ground_truth_output_cleaned = ground_truth_output_cleaned.strip()
-
-    # bt.logging.debug('ground truth output', ground_truth_output_cleaned)
-    # --- get hashing function
-    # ground_truth_hash = hashing_function(ground_truth_output_cleaned)
 
     # --- Get the uids to query
     start_time = time.time()

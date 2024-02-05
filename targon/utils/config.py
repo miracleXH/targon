@@ -221,6 +221,13 @@ def add_verifier_args(cls, parser):
     )
 
     parser.add_argument(
+        "--neuron.iter_rate",
+        type=int,
+        help="The number of iterations to run in a single step.",
+        default=3,
+    )
+
+    parser.add_argument(
         "--neuron.disable_set_weights",
         action="store_true",
         help="Disables setting weights.",

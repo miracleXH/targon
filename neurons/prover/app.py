@@ -78,7 +78,7 @@ class Prover(BaseProverNeuron):
                 "query": synapse.query,
                 "sources": synapse.sources,
             }
-
+    
             prompt = create_prompt(prompt_input)
 
 
@@ -155,6 +155,7 @@ class Prover(BaseProverNeuron):
             top_k=sampling_params.top_k,
             top_p=sampling_params.top_p,
             truncate=sampling_params.truncate,
+            top_n_tokens=sampling_params.top_n_tokens,
             typical_p=sampling_params.typical_p,
             watermark=sampling_params.watermark,
             details=False,
