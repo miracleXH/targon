@@ -135,7 +135,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
             return response
         
         responses = asyncio.gather(*[proofs() for i in range(5)])
-        prover_outputs = [response.completion for response in responses]
+        prover_outputs = await [response.completion for response in responses]
 
         # verified = verify( self, prover_outputs, ground_truth_outputs )
         verified = compare_outputs(prover_outputs, ground_truth_outputs)
