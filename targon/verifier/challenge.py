@@ -77,7 +77,33 @@ def verify( self, output, ground_truth_output):
     bt.logging.debug('ground truth output', ground_truth_output)
     return True
 
-async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_truth_output: str, sampling_params: protocol.ChallengeSamplingParams ) -> typing.Tuple[bool, protocol.Challenge]:
+
+
+def verify_pair(output, ground_truth_output):
+    # ensure they are the same length, else shorten the longer one
+    min_length = min(len(output), len(ground_truth_output))
+    output, ground_truth_output = output[:min_length], ground_truth_output[:min_length]
+
+    # Compute hashes
+    output_hash = hashing_function(output)
+    ground_truth_hash = hashing_function(ground_truth_output)
+
+    # Compare hashes
+    return output_hash == ground_truth_hash
+
+def compare_outputs(prover_outputs, ground_truths):
+    if len(prover_outputs) != len(ground_truths):
+        raise ValueError("The number of prover outputs and ground truths must be equal")
+
+    # Count how many outputs are equal by verifying each pair
+    equal_count = sum(verify_pair(output, gt) for output, gt in zip(prover_outputs, ground_truths))
+
+    # Check if more than 50% are equal
+    return equal_count > len(prover_outputs) / 2
+
+
+
+async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_truth_outputs: typing.List[str], sampling_params: protocol.ChallengeSamplingParams ) -> typing.Tuple[bool, protocol.Challenge]:
     """
     Handles a challenge sent to a prover and verifies the response.
 
@@ -99,21 +125,23 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
             sampling_params=sampling_params,
         )
 
+        async def proofs():
+            response = await self.dendrite(
+                self.metagraph.axons[uid],
+                synapse,
+                deserialize=False,
+                timeout=self.config.neuron.timeout,
+            )
+            return response
+        
+        responses = asyncio.gather(*[proofs() for i in range(5)])
+        prover_outputs = [response.completion for response in responses]
 
-        response = await self.dendrite(
-            self.metagraph.axons[uid],
-            synapse,
-            deserialize=False,
-            timeout=self.config.neuron.timeout,
-        )
-
-        output = response.completion
-
-        bt.logging.debug('prover output', output)
-        verified = verify( self, output, ground_truth_output )
+        # verified = verify( self, prover_outputs, ground_truth_outputs )
+        verified = compare_outputs(prover_outputs, ground_truth_outputs)
 
         output_dict = (
-            response,
+            response[0],
             uid
         )
         return verified, output_dict
@@ -147,7 +175,7 @@ async def handle_challenge( self, uid: int, private_input: typing.Dict, ground_t
         synapse.completion = response
         
 
-        verified = verify( self, response, ground_truth_output )
+        verified = verify( self, response, ground_truth_outputs )
 
         output_dict = (
             synapse,
@@ -196,21 +224,26 @@ async def challenge_data( self ):
         seed=seed
     )
 
+    # generate 5 ground truths
+    async def ground_truths():
+        ground_truth_output = await self.client.text_generation(
+            prompt=prompt,
+            best_of=sampling_params.best_of,
+            max_new_tokens=sampling_params.max_new_tokens,
+            seed=sampling_params.seed,
+            do_sample=sampling_params.do_sample,
+            repetition_penalty=sampling_params.repetition_penalty,
+            temperature=sampling_params.temperature,
+            top_k=sampling_params.top_k,
+            top_p=sampling_params.top_p,
+            truncate=sampling_params.truncate,
+            typical_p=sampling_params.typical_p,
+            watermark=sampling_params.watermark,
+        ) 
+        return ground_truth_output
+    
+    ground_truth_outputs = asyncio.gather(*[ground_truths() for i in range(5)])
 
-    ground_truth_output = await self.client.text_generation(
-        prompt=prompt,
-        best_of=sampling_params.best_of,
-        max_new_tokens=sampling_params.max_new_tokens,
-        seed=sampling_params.seed,
-        do_sample=sampling_params.do_sample,
-        repetition_penalty=sampling_params.repetition_penalty,
-        temperature=sampling_params.temperature,
-        top_k=sampling_params.top_k,
-        top_p=sampling_params.top_p,
-        truncate=sampling_params.truncate,
-        typical_p=sampling_params.typical_p,
-        watermark=sampling_params.watermark,
-    ) 
 
 
     # --- Get the uids to query
@@ -222,7 +255,7 @@ async def challenge_data( self ):
     bt.logging.debug(f"challenge uids {uids}")
     responses = []
     for uid in uids:
-        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_output, sampling_params)))
+        tasks.append(asyncio.create_task(handle_challenge(self, uid, private_input, ground_truth_outputs, sampling_params)))
     responses = await asyncio.gather(*tasks)
 
 
