@@ -217,8 +217,8 @@ async def challenge_data( self ):
     start_time = time.time()
     tasks = []
     # uids = await get_tiered_uids( self, k=self.config.neuron.sample_size )
-    # uids = get_random_uids( self, k=self.config.neuron.sample_size )
-    uids = get_random_uids_deterministically( self, k=self.config.neuron.sample_size )
+    uids = get_random_uids( self, k=self.config.neuron.sample_size )
+    # uids = get_random_uids_deterministically( self, k=self.config.neuron.sample_size )
     bt.logging.debug(f"challenge uids {uids}")
     responses = []
     for uid in uids:
