@@ -94,6 +94,9 @@ def verify_pair(output, ground_truth_output):
 def compare_outputs(prover_outputs, ground_truths):
     if len(prover_outputs) != len(ground_truths):
         raise ValueError("The number of prover outputs and ground truths must be equal")
+    
+    bt.logging.debug('prover outputs', prover_outputs)
+    bt.logging.debug('ground truths', ground_truths)
 
     # Count how many outputs are equal by verifying each pair
     equal_count = sum(verify_pair(output, gt) for output, gt in zip(prover_outputs, ground_truths))
