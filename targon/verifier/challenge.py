@@ -242,7 +242,7 @@ async def challenge_data( self ):
         ) 
         return ground_truth_output
     
-    ground_truth_outputs = asyncio.gather(*[ground_truths() for i in range(5)])
+    ground_truth_outputs = await asyncio.gather(*[ground_truths() for i in range(5)])
 
 
 
