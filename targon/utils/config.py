@@ -153,7 +153,7 @@ def add_prover_args(cls, parser):
         "--blacklist.allow_non_registered",
         action="store_false",
         help="If set, provers will accept queries from non registered entities. (Dangerous!)",
-        default=True,
+        default=False,
     )
 
     parser.add_argument(
