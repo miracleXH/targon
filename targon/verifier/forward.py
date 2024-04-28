@@ -17,6 +17,7 @@
 # DEALINGS IN THE SOFTWARE.
 
 import time
+import random
 import asyncio
 import bittensor as bt
 from pprint import pformat
@@ -38,18 +39,23 @@ async def forward(self):
     """
     try:
         start_time = time.time()
-        bt.logging.info(f"forward block: {self.block}")
+        bt.logging.info(f"forward block: {self.block if not self.config.mock else self.block_number} step: {self.step}")
 
-        # --- Generate the query.
-        event = await challenge_data(self)
-
+        # --- Perform coin flip
+        if random.random() < self.config.neuron.challenge_probability:
+            # --- Generate the query.
+            event = await challenge_data(self)
+        else:
+            # --- Generate the query.
+            event = await inference_data(self)
+        
         # --- Log the event
         log_event(self, event)
 
         if not self.config.mock:
             if self.block >= self.next_adjustment_block and self.step > 0:
                 bt.logging.info("initiating compute stats")
-                await compute_all_tiers(self.database)
+                await compute_all_tiers(self.database, self.block)
 
                 # Update prover statistics and usage data.
                 stats = await get_prover_statistics(self.database)
@@ -60,9 +66,10 @@ async def forward(self):
                 self.next_adjustment_block = self.last_interval_block + self.adjustment_interval
                 self.step = 0
         else:
+            self.block_number += 1
             if self.step % self.config.neuron.compute_stats_interval == 0 and self.step > 0:
                 bt.logging.info("initiating compute stats")
-                await compute_all_tiers(self.database)
+                await compute_all_tiers(self.database, self.block_number)
 
                 # Update prover statistics and usage data.
                 stats = await get_prover_statistics(self.database)
@@ -82,10 +89,12 @@ async def forward(self):
                     await asyncio.sleep(sleep_time)
         else:
             time.sleep(1)
+        
     except Exception as e:
         bt.logging.error(f"Error in forward: {e}")
         time.sleep(12)
         pass
+
 
 
 

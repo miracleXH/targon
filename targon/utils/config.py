@@ -67,6 +67,13 @@ def add_args(cls, parser):
     parser.add_argument("--netuid", type=int, help="Subnet netuid", default=4)
 
     parser.add_argument(
+        "--neuron.disable_set_weights",
+        action="store_true",
+        help="Disables setting weights.",
+        default=False,
+    )
+
+    parser.add_argument(
         "--neuron.device",
         type=str,
         help="Device to run on.",
@@ -231,17 +238,17 @@ def add_verifier_args(cls, parser):
     )
 
     parser.add_argument(
+        "--neuron.challenge_probability",
+        type=float,
+        help="The probability of challenging a prover.",
+        default=0.5,
+    )
+
+    parser.add_argument(
         "--neuron.sample_size",
         type=int,
         help="The number of provers to query in a single step.",
         default=48,
-    )
-
-    parser.add_argument(
-        "--neuron.disable_set_weights",
-        action="store_true",
-        help="Disables setting weights.",
-        default=False,
     )
 
     parser.add_argument(
